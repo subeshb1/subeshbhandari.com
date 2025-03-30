@@ -7,17 +7,24 @@ interface CodeBlockProps {
   filename?: string;
 }
 
-export async function CodeBlock({ children, className, filename }: CodeBlockProps) {
+export async function CodeBlock({
+  children,
+  className,
+  filename,
+}: CodeBlockProps) {
   // Extract the language from className (format: "language-xxx")
   const lang = className ? className.replace('language-', '') : 'text';
-  
+
   // Check if the content is a string
   const codeString = typeof children === 'string' ? children : '';
-  
+  if (!codeString.includes('\n')) {
+    return <code>{codeString}</code>;
+  }
+
   try {
     // Pass the language to the highlighter as a string
     const highlighted = await highlightCode(codeString, lang);
-    
+
     return (
       <div className="code-block-wrapper relative my-6">
         {filename && (
@@ -47,4 +54,4 @@ export async function CodeBlock({ children, className, filename }: CodeBlockProp
       </div>
     );
   }
-} 
+}

@@ -13,7 +13,7 @@ export default function Footer() {
           
           <div className="flex space-x-4">
             <a 
-              href="https://twitter.com" 
+              href="https://x.com/subeshb1" 
               target="_blank" 
               rel="noopener noreferrer"
               className="text-[rgb(var(--color-text-secondary))] hover:text-primary-600 transition-colors"
@@ -24,7 +24,7 @@ export default function Footer() {
               </svg>
             </a>
             <a 
-              href="https://github.com" 
+              href="https://github.com/subeshb1" 
               target="_blank" 
               rel="noopener noreferrer"
               className="text-[rgb(var(--color-text-secondary))] hover:text-primary-600 transition-colors"
@@ -35,7 +35,7 @@ export default function Footer() {
               </svg>
             </a>
             <a 
-              href="https://linkedin.com" 
+              href="https://www.linkedin.com/in/subesh-bhandari-523438112/" 
               target="_blank" 
               rel="noopener noreferrer"
               className="text-[rgb(var(--color-text-secondary))] hover:text-primary-600 transition-colors"

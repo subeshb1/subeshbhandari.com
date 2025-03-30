@@ -9,17 +9,17 @@
   --color-text-primary: 23 23 23;
   --color-text-secondary: 82 82 82;
 
-  --color-primary-50: 240 249 255;
-  --color-primary-100: 224 242 254;
-  --color-primary-200: 186 230 253;
-  --color-primary-300: 125 211 252;
-  --color-primary-400: 56 189 248;
-  --color-primary-500: 14 165 233;
-  --color-primary-600: 2 132 199;
-  --color-primary-700: 3 105 161;
-  --color-primary-800: 7 89 133;
-  --color-primary-900: 12 74 110;
-  --color-primary-950: 8 47 73;
+  --color-primary-50: 235 246 255;
+  --color-primary-100: 225 241 255;
+  --color-primary-200: 195 221 253;
+  --color-primary-300: 164 202 254;
+  --color-primary-400: 118 169 250;
+  --color-primary-500: 86 156 255;
+  --color-primary-600: 37 99 235;
+  --color-primary-700: 37 99 235;
+  --color-primary-800: 30 79 188;
+  --color-primary-900: 24 63 150;
+  --color-primary-950: 16 42 100;
 }
 
 .dark {

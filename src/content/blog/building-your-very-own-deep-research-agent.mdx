@@ -1,0 +1,261 @@
+---
+title: Building Your Very Own Deep Research Agent
+published: true
+description: Build your own deep research agent with Agenite, a modern, modular, and type-safe framework for AI agents in TypeScript.
+tags: ["agenite","ai","agent","research","websearch","webscraping"]
+coverImage: https://dev-to-uploads.s3.amazonaws.com/uploads/articles/zdth663rqxlpcxv4ys0k.png
+# Use a ratio of 100:42 for best results.
+# published_at: 2025-02-06 13:06 +0000
+date: 2025-02-06 13:06 +0000
+featured: true
+---
+
+OpenAI recently introduced a deep research agent capable of autonomous web research and content synthesis. Inspired by this, we’re building our own AI-powered research assistant that tirelessly scours the web, analyzes data, and compiles well-structured reports — all without the hefty $200 per month subscription fee. Sounds great, right? That’s exactly what we’re going to build today using [**Agenite**](https://github.com/subeshb1/agenite), a modern, modular, and type-safe framework for AI agents in TypeScript.
+
+In this post, I’ll walk you through setting up your own deep research agent, capable of autonomously conducting research, summarizing key insights, and delivering high-quality reports. And yes, it’ll be fun!
+
+## **Tools Used**
+
+* [**Agenite**](https://github.com/subeshb1/agenite) — AI Agent framework for TypeScript
+    
+* [**DuckDuck**](https://duckduckgo.com/) Go — Search engine
+    
+* [**Pupeeter**](https://pptr.dev/) — Web scraping engine
+    
+* [**AWS** **Bedrock**](https://aws.amazon.com/bedrock/) — LLM Provider
+    
+* [**Claude 3.5 Haiku**](https://github.com/subeshb1/agenite) — LLM Model from Anthropic
+    
+
+If you prefer to dive straight into the code, check it out here: [GitHub Link](https://github.com/subeshb1/agenite/tree/main/examples/deep-research-agent).
+
+## **Architecture**
+
+
+![Image description](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/zdth663rqxlpcxv4ys0k.png)
+
+
+
+Our agent follows a structured workflow:
+
+1. **User Input**: The user provides a research topic.
+    
+2. **Web Search**: The agent finds **high-quality** sources.
+    
+3. **Data Extraction**: It scrapes and summarizes content.
+    
+4. **Report Generation**: A well-structured blog post is created.
+    
+
+Let’s see this in action with some real code:
+
+### **Creating the Deep Research Agent**
+
+```plaintext
+import { Agent } from '@agenite/agent';
+import { getLLMProvider } from '@agenite-examples/llm-provider';
+import { fileManagerTool, webScraperTool, webSearchTool } from '../tools';
+
+export const deepResearchAgent = new Agent({
+  name: 'deep_research',
+  description:
+    'Creates well-researched blog posts by combining topic discovery, source analysis, and content writing',
+  tools: [webScraperTool, webSearchTool, fileManagerTool],
+  provider: getLLMProvider(),
+  systemPrompt: `You are an advanced research and writing agent that creates comprehensive blog posts.
+
+Your process:
+1. Use webSearchTool to:
+   - Find 3 most relevant URLs for the topic
+   - Get basic title and description for each URL
+   - Return only high-quality, authoritative sources
+
+2. Use webScraperTool to:
+   - Scrape at least 2 sources
+   - Extract and summarize content from each URL
+   - Only extract important information, not the entire content
+
+3. Use fileManagerTool to:
+   - Store the extracted content in the file system
+   - Maintain source attribution and metadata
+   - Store in markdown format
+
+Ensure the final blog post:
+- Is well-structured and engaging
+- Synthesizes information from all sources
+- Includes proper citations and references
+- Provides valuable insights to readers
+
+Always maintain transparency about sources:
+- Include citations for key information
+- Link to original sources
+- Credit expert opinions and quotes
+- Acknowledge any gaps in research`,
+});
+```
+
+### **Web Search Tool (DuckDuckGo)**
+
+```plaintext
+import { Tool } from '@agenite/tool';
+import puppeteer from 'puppeteer';
+
+async function searchDuckDuckGo(query: string, limit: number = 5) {
+  const browser = await puppeteer.launch({ headless: false });
+  try {
+    const page = await browser.newPage();
+    await page.goto(`https://duckduckgo.com/?q=${encodeURIComponent(query)}`, {
+      waitUntil: 'networkidle0',
+    });
+    await page.waitForSelector('article[data-testid="result"]');
+    
+    const results = await page.evaluate((resultLimit) => {
+      return Array.from(document.querySelectorAll('article[data-testid="result"]'))
+        .slice(0, resultLimit)
+        .map(result => ({
+          title: result.querySelector('[data-testid="result-title-a"]')?.textContent?.trim() || '',
+          url: result.querySelector('[data-testid="result-title-a"]')?.getAttribute('href') || '',
+          snippet: result.querySelector('[data-result="snippet"]')?.textContent?.trim() || '',
+        }));
+    }, limit);
+    return results;
+  } catch (error) {
+    console.error('Search failed:', error);
+    return [];
+  } finally {
+    await browser.close();
+  }
+}
+
+export const webSearchTool = new Tool({
+  name: 'web_search',
+  description: 'Searches DuckDuckGo for relevant sources.',
+  execute: async ({ input }) => searchDuckDuckGo(input.query, input.limit),
+});
+```
+
+### **Page Scraper Tool**
+
+```plaintext
+mport puppeteerExtra from 'puppeteer-extra';
+import Stealth from 'ipuppeteer-extra-plugin-stealth';
+puppeteerExtra.use(Stealth());
+
+class ContentExtractor {
+  constructor() {
+    this.browser = null;
+  }
+
+  async init() {
+    if (!this.browser) {
+      this.browser = await puppeteerExtra.launch({ headless: true });
+    }
+  }
+
+  async extract(url: string) {
+    await this.init();
+    const page = await this.browser.newPage();
+    await page.goto(url, { waitUntil: 'networkidle0', timeout: 30000 });
+    const content = await page.evaluate(() => ({
+      title: document.title,
+      content: document.body.innerText.trim(),
+    }));
+    await page.close();
+    return { url, ...content };
+  }
+
+  async close() {
+    if (this.browser) {
+      await this.browser.close();
+      this.browser = null;
+    }
+  }
+}
+```
+
+### **File Manager Tool**
+
+```plaintext
+import * as fs from 'fs/promises';
+import * as path from 'path';
+
+async function ensureDirectoryExists(dirPath: string) {
+  try { await fs.access(dirPath); }
+  catch { await fs.mkdir(dirPath, { recursive: true }); }
+}
+
+export const fileManagerTool = new Tool({
+  name: 'file_manager',
+  description: 'Manages research data files.',
+  execute: async ({ input }) => {
+    const dirPath = path.join(process.cwd(), 'research', input.type);
+    await ensureDirectoryExists(dirPath);
+    const filePath = path.join(dirPath, input.filename || `${Date.now()}.md`);
+    if (input.action === 'write') {
+      await fs.writeFile(filePath, input.content, 'utf8');
+      return { success: true, data: `File written: ${filePath}` };
+    } else {
+      const content = await fs.readFile(filePath, 'utf8');
+      return { success: true, data: content };
+    }
+  },
+});
+```
+
+### **Usage**
+
+To use the research agent, simply instantiate it and provide a research topic:
+
+```plaintext
+const topic = 'Latest advancements in AI';
+deepResearchAgent.execute({ input: topic });
+```
+
+The agent will:
+
+1. Search for high-quality sources.
+    
+2. Scrape and extract key insights.
+    
+3. Store the information and generate a structured blog post.
+    
+
+
+
+## **Conclusion**
+
+With **Agenite**, we’ve built a powerful AI-driven research agent capable of automating deep research and content generation. This agent saves time, provides well-structured insights, and eliminates reliance on costly research tools.
+
+## **What’s Next?**
+
+* Enhance the agent with **fact-checking mechanisms**.
+    
+* Integrate **multi-modal AI** (text + images + videos).
+    
+* Automate **report summarization and delivery** via email or notifications.
+    
+
+Ready to build your own AI-powered research assistant? Start experimenting with Agenite today and make your research process effortless!
+
+## **Let’s Build Together!**
+
+AI agents are all about collaboration, and we’d love to see what you create. Share your projects, ideas, and improvements:
+
+* **Contribute to the** [**Agenite repository**](https://github.com/subeshb1/agenite): Your input can help make Agenite even better.
+    
+* **Join the community**: Join discussions, share your experiences, and get feedback from other creators.
+    
+* **Collaborate on exciting new features**: Have an idea for a cool new feature? Let’s work together to bring it to life!
+    
+
+Your contributions, no matter how big or small, help shape the future of AI agents. Let’s build something great together!
+
+## **Connect with me:**
+
+* GitHub: [subeshb1](https://github.com/subeshb1)
+    
+* LinkedIn: [Subesh Bhandari](https://www.linkedin.com/in/subesh-bhandari-523438112/)
+    
+* X: [https://x.com/subeshb1](https://x.com/subeshb1)
+    
+* Leave a ⭐ on the [repository](https://github.com/subeshb1/agenite) if you found this helpful!

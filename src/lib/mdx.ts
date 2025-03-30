@@ -13,6 +13,7 @@ export interface Post {
   lastModified?: string;
   author?: string;
   coverImage?: string;
+  featured?: boolean;
 }
 
 export async function getPostBySlug(slug: string): Promise<Post | null> {
@@ -31,6 +32,7 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
       lastModified: data.lastModified,
       author: data.author || 'Subesh Bhandari',
       coverImage: data.coverImage,
+      featured: data.featured || false,
     };
   } catch (error) {
     console.error(`Error getting post for slug ${slug}:`, error);
@@ -59,6 +61,7 @@ export async function getAllPosts(): Promise<Post[]> {
           lastModified: data.lastModified,
           author: data.author || 'Subesh Bhandari',
           coverImage: data.coverImage,
+          featured: data.featured || false,
         };
       })
       .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
@@ -68,4 +71,9 @@ export async function getAllPosts(): Promise<Post[]> {
     console.error('Error getting all posts:', error);
     return [];
   }
+}
+
+export async function getFeaturedPosts(): Promise<Post[]> {
+  const allPosts = await getAllPosts();
+  return allPosts.filter(post => post.featured).slice(0, 3); // Get up to 3 featured posts
 } 

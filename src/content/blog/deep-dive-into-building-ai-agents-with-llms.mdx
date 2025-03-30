@@ -1,0 +1,1167 @@
+---
+title: Deep Dive into Building AI Agents with LLMs
+published: true
+description: A comprehensive guide on building AI agents using LLMs and Agenite, exploring different levels of integration and practical implementations.
+tags: ["agenite","ai","agent","research","websearch","webscraping"]
+coverImage: https://dev-to-uploads.s3.amazonaws.com/uploads/articles/fvsbi4pfcag3hoe4jl90.png
+# Use a ratio of 100:42 for best results.
+date: 2025-01-31 06:28 +0000
+featured: true
+---
+
+2025 isn’t just another year — it’s the *year of AI agents*. The AI hype has reached stratospheric heights, and cutting-edge models are turning entire industries on their heads. If you’ve been waiting for the right moment to jump into this transformative space, *this is it*. AI agents are no longer just buzzwords; they’re becoming indispensable tools for businesses and individuals alike. Having been deep in the trenches of this revolution, I’m thrilled to share everything I’ve uncovered to help you ride this wave of innovation.
+
+
+![Image description](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/7ek2ek3hplsr7znee6kt.png)
+
+
+In this blog, we’ll take a deep dive into building AI agents that can automate tasks and boost productivity. For this tutorial, I’ll introduce [**Agenite**](https://github.com/subeshb1/agenite), a versatile library that simplifies working with LLMs across providers. No matter which LLM provider or model you use, you can follow along by simply changing the provider library.
+
+If you’re eager to get started, check out the [ai-agents-deep-dive GitHub Repository](https://github.com/subeshb1/ai-agents-deep-dive). [https://github.com/subeshb1/ai-agents-deep-dive](https://github.com/subeshb1/ai-agents-deep-dive)
+
+# **What Will We Cover?**
+
+1. What is an AI Agent?
+    
+2. Key Terminologies
+    
+3. Different Levels of LLM Integration
+    
+4. Building Your First Agent
+    
+5. Creating Advanced Agents with Agenite
+
+
+
+Depending on what you are interested feel free to skip directly into that section.
+
+# **What is an AI Agent?**
+
+An **AI Agent** is a software powerhouse powered by artificial intelligence, designed to autonomously perform a wide array of tasks using LLMs (Large Language Models). These agents go beyond simple automation — they are intelligent, goal-oriented entities that combine reasoning, adaptability, and tool integration to achieve user-defined objectives seamlessly.
+
+Imagine having a virtual assistant that doesn’t just follow instructions but truly understands your needs. AI agents can be your personal coders, tireless researchers, or even creative problem solvers. Here’s what makes them exceptional:
+
+* **Natural Language Understanding**: Effortlessly process and act on conversational commands.
+    
+* **Task Automation**: Eliminate the monotony by handling repetitive tasks with precision.
+    
+* **Seamless Integration**: Connect with APIs, databases, or external systems to amplify capabilities.
+    
+* **Continuous Learning**: Adapt to feedback and evolve to deliver better results over time.
+    
+* **Collaborative Intelligence**: Work with multiple tools or even other agents to accomplish complex workflows.
+    
+
+In short, AI agents are not just tools; they are your intelligent, dynamic collaborators in an ever-evolving digital world.
+
+# **Key Terminologies to Understand**
+
+Before building agents, let’s clarify some key concepts:
+
+
+![Image description](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/mmex56yzv5ai3zwtjrlq.png)
+
+
+
+# **1\. Large Language Models (LLMs)**
+
+LLMs are neural networks trained on vast text datasets that serve as the **brains** of AI agents. They:
+
+* **Understand user intent** by processing natural language.
+    
+* **Decide which tools to use** for different tasks.
+    
+* **Generate human-like responses** based on tool outputs.
+    
+
+📌 **Example**:  
+**User**: “What’s the weather like in Paris?”  
+**Agent**:
+
+1. Recognizes a weather-related query.
+    
+2. Calls a weather API to get data.
+    
+3. Formats the response naturally.
+    
+
+# **2\. Context Window**
+
+The **context window** determines how much information the agent can remember within a conversation. It includes:
+
+* **Short-term memory** — tracking the current conversation.
+    
+* **Working memory** — storing intermediate results from tools.
+    
+* **System instructions** — ensuring consistent behavior.
+    
+
+📌 **Example**:  
+**User**: “Compare this data to what I shared yesterday.”  
+**Agent**:
+
+1. Retrieves previous data from memory.
+    
+2. Align it with the current request.
+    
+3. Maintains continuity across multiple interactions.
+    
+
+# **3\. Tool Integration**
+
+AI agents **enhance their capabilities** by using external tools, such as APIs, databases, or calculators. The system manages:
+
+* **Tool selection** — choosing the best tool for the task.
+    
+* **Input preparation** — formatting user requests into tool-friendly commands.
+    
+* **Output handling** — converting tool responses into understandable answers.
+    
+
+📌 **Example**:  
+**User**: “Calculate Q1 profits and make a chart.”  
+**Agent**:
+
+1. Uses a calculator tool for profits.
+    
+2. Passes results to a visualization tool.
+    
+3. Returns a formatted chart.
+    
+
+# **4\. Prompt Engineering**
+
+Prompts are structured instructions that guide the LLM’s responses. Effective prompts define:
+
+* **Agent behavior** — how it should interact.
+    
+* **Tool usage** — when and how tools should be used.
+    
+* **Response formatting** — maintaining structured outputs.
+    
+
+📌 **Example**:  
+**User**: “Analyze these sales numbers.”  
+**Agent’s internal flow**:
+
+1. Clarifies the type of analysis needed.
+    
+2. Select the appropriate tools.
+    
+3. Formats the results in a useful way.
+    
+
+# **5\. Agent Orchestration**
+
+Orchestration ensures the agent functions **as a cohesive system**, managing:
+
+* **Conversation flow** — tracking interactions.
+    
+* **Multi-tool coordination** — handling complex tasks.
+    
+* **Error handling** — detecting failures and retrying if needed.
+    
+
+📌 **Example orchestration flow**:  
+User input → LLM processing → Context retrieval → Tool selection → Execution → Response generation.
+
+# **Understanding Integration Levels**
+
+When building AI agents, it’s crucial to understand the different ways we can interact with LLMs. Each level of integration adds new capabilities and complexity, allowing us to create increasingly sophisticated agents. The progression follows a natural path:
+
+1\. **Basic Integration**: Simple request-response pattern
+
+2\. **Contextual Integration**: Adding memory and personality
+
+3\. **Tool Integration**: Extending capabilities beyond text
+
+4\. **Self-Reflection**: Adding reasoning and improvement
+
+This progression allows us to build agents that can handle increasingly complex tasks while maintaining reliability and control.
+
+Let’s start by installing a couple of libraries that will help us walk through the integration.
+
+```plaintext
+npm install @agenite/llm @agenite/bedrock @agenite/ollama
+```
+
+For all the examples below, we will use a common LLM provider. I’ve added a wrapper so you can change the provider to your needs.
+
+```ts
+// shared-llm-provider/src/index.ts
+import { BedrockProvider } from '@agenite/bedrock';
+import { OllamaProvider } from '@agenite/ollama';
+
+export function getLLMProvider(): LLMProvider {
+  const provider = process.env.LLM_PROVIDER || 'bedrock';
+  const modelId = process.env.LLM_MODEL_ID || 'anthropic.claude-v2';
+
+  switch (provider) {
+    case 'bedrock':
+      return new BedrockProvider({
+        modelId,
+        region: process.env.AWS_REGION || 'us-east-1',
+      });
+
+    case 'ollama':
+      return new OllamaProvider({
+        modelId,
+        baseUrl: process.env.OLLAMA_BASE_URL || 'http://localhost:11434',
+      });
+
+    default:
+      throw new Error(`Unsupported provider: ${provider}`);
+  }
+}
+```
+
+For this blog, I will be using **Anthropic Claude** as the model, with **Amazon Bedrock** as the provider. However, feel free to use the provider and model you are already working with.
+
+Now, Let’s get started!
+
+# **1\. Basic LLM Integration**
+
+
+![Image description](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/avram7iqh6zpkm2xwuag.png)
+
+
+
+The simplest form of interaction is a direct request-response pattern. This is the foundation of all LLM interactions. At this level, we focus on:
+
+* **Message Structure**: Understanding how to format requests
+    
+* **Response Handling**: Processing and displaying responses
+    
+* **Error Management**: Handling potential failures
+    
+* **Performance Tracking**: Monitoring token usage and completion reasons
+    
+
+Here’s a basic implementation:
+
+```ts
+import { getLLMProvider, printMessage, printSeparator } from 'shared-llm-provider';
+import { BaseMessage } from '@agenite/llm';
+
+async function main() {
+  const provider = getLLMProvider();
+  const messages: BaseMessage[] = [
+    {
+      role: 'user',
+      content: [
+        {
+          type: 'text',
+          text: 'Hi there, what can you do?',
+        },
+      ],
+    },
+  ];
+  printMessage('user', 'Hi there, what can you do?');
+  
+  const response = await provider.generate(messages);
+  printMessage('assistant', response.content);
+  
+  printSeparator();
+  printMessage('system', `Stop Reason: ${response.stopReason}`);
+  printMessage('system', `Token Usage: ${JSON.stringify(response.tokens, null, 2)}`);
+}
+main().catch(console.error);
+```
+
+**Output**
+
+```plaintext
+👤 USER
+───────────────────
+Hi there, what can you do?
+
+🤖 ASSISTANT
+───────────────────
+I want to be direct and transparent with you. I can help with a wide variety of tasks like writing, analysis, answering questions, brainstorming ideas, explaining complex topics, and providing information. I aim to be helpful while being honest about my capabilities. I'll do my best to assist you, and I'll let you know if something is outside of my abilities. What would you like help with?
+──────────────────────────────────────────────────
+
+⚙️ SYSTEM
+───────────────────
+Stop Reason: endTurn
+⚙️ SYSTEM
+───────────────────
+Token Usage: [
+  {
+    "modelId": "anthropic.claude-3-5-haiku-20241022-v1:0",
+    "inputTokens": 15,
+    "outputTokens": 88
+  }
+]
+```
+
+Let’s break down the key components:
+
+**Message Structure**
+
+```ts
+const messages: BaseMessage[] = [{
+  role: 'user',
+  content: [{ type: 'text', text: 'Hi there, what can you do?' }]
+}];
+```
+
+* `role`: Defines who is speaking ('user', 'assistant', 'system')
+    
+* `content`: Array of content blocks (text, images, etc.)
+    
+* `type`: Content type identifier ('text' in this case)
+    
+
+**Response Handling**
+
+```ts
+const response = await provider.generate(messages);
+printMessage('assistant', response.content);
+```
+
+* Asynchronous generation using `await`
+    
+* Proper error handling with `.catch()`
+    
+* Pretty printing of responses
+    
+
+**Metadata Tracking**
+
+```ts
+printMessage('system', `Stop Reason: ${response.stopReason}`);
+printMessage('system', `Token Usage: ${JSON.stringify(response.tokens, null, 2)}`);
+```
+
+* Track completion reasons
+    
+* Monitor token usage
+    
+* Log system information
+    
+
+# **2\. Adding Context**
+
+
+![Image description](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/666u63zbiig05ych47l8.png)
+
+
+
+Context enriches our interactions by providing additional information or setting specific behaviors for the LLM. This level introduces:
+
+* **System Prompts**: Setting behavior and personality
+    
+* **Conversation History**: Maintaining context across interactions
+    
+* **Role-Based Interactions**: Different types of messages
+    
+* **Enhanced Response Control**: More precise outputs
+    
+
+```ts
+import { getLLMProvider, printMessage, printSystemInfo, printSeparator } from 'shared-llm-provider';
+import { BaseMessage } from '@agenite/llm';
+async function main() {
+  const provider = getLLMProvider();
+  // First query with system context
+  const systemPrompt =
+    'You are professional javascript developer. You are given a task and you need to complete it.';
+  
+  printSystemInfo(systemPrompt);
+  const messages: BaseMessage[] = [
+    {
+      role: 'user',
+      content: [
+        {
+          type: 'text',
+          text: 'Hi there, what can you do?',
+        },
+      ],
+    },
+  ];
+  printMessage('user', 'Hi there, what can you do?');
+  const response = await provider.generate(messages, {
+    systemPrompt: systemPrompt,
+  });
+  printMessage('assistant', response.content);
+  
+  printSeparator();
+  printMessage('system', `Stop Reason: ${response.stopReason}`);
+  printMessage('system', `Token Usage: ${JSON.stringify(response.tokens, null, 2)}`);
+}
+main().catch(console.error);
+```
+
+**Output**
+
+```plaintext
+
+⚙️ You are professional javascript developer. You are given a task and you need to complete it.
+
+👤 USER
+───────────────────
+Hi there, what can you do?
+
+🤖 ASSISTANT
+───────────────────
+As a professional JavaScript developer, I can help you with a wide range of tasks related to web development, programming, and software engineering. Some of the things I can assist you with include:
+
+1. Writing JavaScript code
+2. Debugging and troubleshooting
+3. Creating web applications
+4. Developing frontend and backend solutions
+5. Explaining programming concepts
+6. Providing code reviews
+7. Helping with frameworks like React, Vue, Angular
+8. Assisting with Node.js development
+9. Offering best practices and design patterns
+10. Solving algorithmic problems
+
+Feel free to ask me about any JavaScript-related task or challenge, and I'll do my best to help you solve it efficiently and effectively.
+
+──────────────────────────────────────────────────
+
+
+⚙️ SYSTEM
+───────────────────
+Stop Reason: endTurn
+
+⚙️ SYSTEM
+───────────────────
+Token Usage: [
+  {
+    "modelId": "anthropic.claude-3-5-haiku-20241022-v1:0",
+    "inputTokens": 33,
+    "outputTokens": 159
+  }
+]
+```
+
+**Understanding System Prompts**
+
+The system prompt is crucial for:
+
+1. **Setting Behavior**: Define how the agent should act
+    
+2. **Establishing Expertise**: Specify domain knowledge
+    
+3. **Setting Constraints**: Define limitations and requirements
+    
+4. **Format Control**: Specify output formats
+    
+
+**Message Flow**
+
+1. The system prompt sets the stage
+    
+2. User message initiates interaction
+    
+3. The assistant responds within the context
+    
+4. Metadata tracks performance
+    
+
+# **3\. Tool Integration**
+
+
+![Image description](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/6lh53yi59qb1rmpi4ae9.png)
+
+
+
+Tools extend an agent’s capabilities beyond text generation, allowing it to perform specific tasks or access external resources. This level introduces:
+
+* **Tool Definition**: Structured way to define capabilities
+    
+* **Tool Selection**: LLM decides when to use tools
+    
+* **Result Integration**: Incorporating tool outputs
+    
+* **Error Handling**: Managing tool execution failures
+    
+
+```ts
+import { getLLMProvider, printMessage, printSystemInfo, printSeparator } from 'shared-llm-provider';
+// Example tool that gets current time
+const getCurrentTime = () => new Date().toLocaleTimeString();
+const getWeather = () => 'The weather is sunny';
+// Tool definitions
+const tools = [
+  {
+    name: 'getCurrentTime',
+    description: 'Get the current time',
+    execute: getCurrentTime,
+    inputSchema: {
+      type: 'object' as const,
+      properties: {},
+      required: [],
+    },
+  },
+  {
+    name: 'getWeather',
+    description: 'Get the current weather',
+    execute: getWeather,
+    inputSchema: {
+      type: 'object' as const,
+      properties: {},
+      required: [],
+    },
+  },
+];
+async function toolUseExample(prompt: string) {
+  printMessage('user', prompt);
+  const provider = getLLMProvider();
+  const systemPrompt = 'You are a helpful assistant. Use the tools when needed.';
+  printSystemInfo(systemPrompt);
+  const response = await provider.generate(prompt, {
+    systemPrompt,
+    tools,
+  });
+  printMessage('assistant', response.content);
+  
+  const hasToolUse = response.content.find((block) => block.type === 'toolUse');
+  if (hasToolUse) {
+    const tool = tools.find((tool) => tool.name === hasToolUse.name);
+    const toolResult = tool?.execute();
+    printMessage('toolResult', [
+      {
+        type: 'toolResult',
+        toolName: hasToolUse.name,
+        toolUseId: hasToolUse.id,
+        content: toolResult
+      }
+    ]);
+  }
+}
+async function main() {
+  await toolUseExample('What time is it right now?');
+  printSeparator();
+  await toolUseExample('What is the weather like right now?');
+}
+main().catch(console.error);
+```
+
+**Output**
+
+```plaintext
+👤 USER
+───────────────────
+What time is it right now?
+
+⚙️ You are a helpful assistant. Use the tools when needed.
+
+🤖 ASSISTANT
+───────────────────
+I'll help you find out the current time by using the getCurrentTime tool.
+Using tool: getCurrentTime
+
+📊 TOOLRESULT
+───────────────────
+Tool Result (getCurrentTime):
+"4:07:27 PM"
+
+──────────────────────────────────────────────────
+
+
+👤 USER
+───────────────────
+What is the weather like right now?
+
+⚙️ You are a helpful assistant. Use the tools when needed.
+
+🤖 ASSISTANT
+───────────────────
+Let me check the current weather for you.
+Using tool: getWeather
+
+📊 TOOLRESULT
+───────────────────
+Tool Result (getWeather):
+"The weather is sunny"
+```
+
+**Anatomy of a Tool**
+
+```ts
+{
+  name: 'getCurrentTime',          // Unique identifier
+  description: 'Get current time', // Used by LLM to understand tool
+  execute: getCurrentTime,         // Actual implementation
+  inputSchema: {                  // Expected input format
+    type: 'object',
+    properties: {},
+    required: [],
+  }
+}
+```
+
+**Tool Execution Flow**
+
+1. LLM receives a user request
+    
+2. LLM decides to use a tool
+    
+3. The tool executes with the provided parameters
+    
+4. The result is incorporated into the response
+    
+5. The process continues if needed
+    
+
+# **4\. Self-Reflection and Improvement**
+
+
+![Image description](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/fvsbi4pfcag3hoe4jl90.png)
+
+
+
+The most sophisticated level adds self-reflection through continuous interaction and tool usage. This creates a more dynamic and capable agent that can:
+
+* **Maintain Context**: Keep track of conversation state
+    
+* **Chain Actions**: Combine multiple steps
+    
+* **Self-Correct**: Identify and fix issues
+    
+* **Learn from Feedback**: Improve responses based on results
+    
+
+```ts
+import { getLLMProvider, printMessage, printSystemInfo, printSeparator } from 'shared-llm-provider';
+import { BaseMessage } from '@agenite/llm';
+// Tool definitions (same as before)
+const getCurrentTime = () => new Date().toLocaleTimeString();
+const getWeather = () => 'The weather is sunny';
+const tools = [
+  {
+    name: 'getCurrentTime',
+    description: 'Get the current time',
+    execute: getCurrentTime,
+    inputSchema: {
+      type: 'object' as const,
+      properties: {},
+      required: [],
+    },
+  },
+  {
+    name: 'getWeather',
+    description: 'Get the current weather',
+    execute: getWeather,
+    inputSchema: {
+      type: 'object' as const,
+      properties: {},
+      required: [],
+    },
+  },
+];
+async function simpleAgent(prompt: string) {
+  const provider = getLLMProvider();
+  const systemPrompt = `You are a helpful assistant. You are given a task and you need to complete it.\n\n`;
+  printSystemInfo(systemPrompt);
+  let stopReason;
+  let messages: BaseMessage[] = [
+    {
+      role: 'user',
+      content: [
+        {
+          type: 'text',
+          text: prompt,
+        },
+      ],
+    },
+  ];
+  printMessage('user', prompt);
+  while (stopReason !== 'endTurn') {
+    // Get initial response
+    const response = await provider.generate(messages, {
+      systemPrompt: systemPrompt,
+      tools,
+    });
+    messages.push({
+      role: 'assistant',
+      content: response.content,
+    });
+    printMessage('assistant', response.content);
+    printMessage('system', `Stop Reason: ${response.stopReason}`);
+    printMessage('system', `Token Usage: ${JSON.stringify(response.tokens, null, 2)}`);
+    if (response.stopReason === 'toolUse') {
+      const toolUse = response.content.filter(
+        (content) => content.type === 'toolUse'
+      );
+      if (toolUse.length > 0) {
+        const toolResults = toolUse.map((tool) => {
+          const toolDef = tools.find((t) => t.name === tool.name);
+          const result = toolDef?.execute();
+          return {
+            type: 'toolResult',
+            toolUseId: tool.id,
+            toolName: tool.name,
+            content: result,
+          } as const;
+        });
+        printMessage('toolResult', toolResults);
+        messages.push({
+          role: 'user',
+          content: toolResults,
+        });
+      }
+    }
+    stopReason = response.stopReason;
+  }
+}
+async function main() {
+  await simpleAgent('What\'s the weather like today and what time is it?');
+}
+main().catch(console.error);
+```
+
+**Output:**
+
+```plaintext
+
+
+👤 USER
+───────────────────
+What's the weather like today and what time is it?
+
+🤖 ASSISTANT
+───────────────────
+I'll help you get the current weather and time right away.
+Using tool: getWeather
+Using tool: getCurrentTime
+
+⚙️ SYSTEM
+───────────────────
+Stop Reason: toolUse
+
+
+📊 TOOLRESULT
+───────────────────
+Tool Result (getWeather):
+"The weather is sunny"
+Tool Result (getCurrentTime):
+"4:08:35 PM"
+
+🤖 ASSISTANT
+───────────────────
+Based on the results, here's the information:
+- Weather: It's sunny today
+- Current Time: 4:08:35 PM
+
+Is there anything else I can help you with?
+```
+
+**The Reflection Loop**
+
+1. **Initial Response**: Generate the first answer
+    
+2. **Tool Usage**: Identify and use needed tools
+    
+3. **Result Integration**: Incorporate tool results
+    
+4. **Response Refinement**: Improve based on new information
+    
+5. **Continuation Decision**: Determine if more steps needed
+    
+
+**Stop Reasons**
+
+* `endTurn`: Conversation complete
+    
+* `toolUse`: Need to use a tool
+    
+* `length`: Response too long
+    
+* `error`: Something went wrong
+    
+
+Now that we’ve built our first agent, let’s explore more advanced capabilities and real-world applications!
+
+# **Building Specialized AI Agents with @agenite**
+
+In our previous section, we explored the fundamental levels of LLM integration. Now, let’s look at how we can use the [@agenite](https://github.com/subeshb1/agenite/) framework to build specialized agents that can handle complex tasks. We’ll focus on two practical implementations: a coding assistant and a research agent.
+
+## **Why @agenite?**
+
+I built [@agenite](https://github.com/subeshb1/agenite/) while learning how to create AI agents, and it simplifies many complexities involved in agent development. Feel free to give it a try — or use another library while following the examples if it better suits your needs.
+
+The @agenite framework provides a robust foundation for building AI agents by handling key functionalities such as:
+
+* Message handling and formatting
+    
+* Tool registration and execution
+    
+* Context management
+    
+* Response processing
+    
+* Error handling
+    
+* Type safety with TypeScript
+    
+
+This allows us to focus on building specialized capabilities rather than dealing with infrastructure.
+
+# **Building a Coding Assistant**
+
+
+![Image description](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/85rigex3k89197o7tqdf.png)
+
+
+
+The coding agent is designed to help developers with various programming tasks.
+
+How It Works:
+
+* The **Coding Assistant** is initialized as an `Agent` with a system prompt defining its role.
+    
+* It is given access to two tools: **File System Tool** (to read and modify code files) and **Command Runner Tool** (to execute shell commands)
+    
+* The agent processes user input iteratively and executes relevant tools when needed.
+    
+* The **Command Runner Tool** runs shell commands in a safe environment using Node.js’ `child_process.spawn`.
+    
+
+Let’s look at its implementation:
+
+```ts
+import { Agent } from '@agenite/agent';
+import { getLLMProvider, printMessage } from 'shared-llm-provider';
+import { createFileSystemTool } from './tools/file-system';
+import { createCommandRunnerTool } from './tools/command-runner';
+
+export async function runAgent(userInput: string) {
+  const systemPrompt = `You are an expert coding assistant. Your task is to help users with coding tasks by:
+1. Reading and analyzing code files
+2. Finding functions and imports
+3. Making code modifications when requested
+4. Providing explanations and suggestions
+6. If you need to run multiple tools, you can do so by running the tools in sequence.
+Always explain your thought process before taking actions.
+`;
+  const provider = getLLMProvider();
+  const agent = new Agent({
+    name: 'CodingAgent',
+    description: 'An AI agent specialized in coding tasks',
+    provider,
+    systemPrompt,
+    tools: [createFileSystemTool(), createCommandRunnerTool()],
+  });
+  const iterator = agent.iterate({
+    input: userInput,
+    stream: true,
+  });
+
+  let response = await iterator.next();
+
+  while (!response.done) {
+    switch (response.value.type) {
+      case 'streaming':
+        if (response.value.response.type === 'text') {
+          process.stdout.write(response.value.response.text);
+        } else {
+          printMessage('tool', [response.value.response.toolUse]);
+        }
+        break;
+      case 'toolResult':
+        printMessage(
+          'toolResult',
+          response.value.results.map((r) => r.result)
+        );
+        break;
+    }
+    response = await iterator.next();
+  }
+  printMessage('assistant', JSON.stringify(response, null, 2));
+}
+```
+
+**Command Runner Tool**
+
+```ts
+import { Tool, ToolResponse } from '@agenite/tool';
+import { spawn } from 'child_process';
+
+interface CommandInput {
+  command: string;
+  cwd?: string;
+  timeout?: number;
+}
+export function createCommandRunnerTool(): Tool<CommandInput> {
+  const commandCache = new Map<
+    string,
+    {
+      data: string;
+      timestamp: number;
+      success: boolean;
+    }
+  >();
+  return new Tool({
+    name: 'command_runner',
+    description:
+      'Executes shell commands on the system. Use with caution as improper commands can cause unintended behavior.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        command: {
+          type: 'string',
+          description:
+            'The command to execute. Ensure it is a valid shell command.',
+        },
+        cwd: {
+          type: 'string',
+          description: 'Optional working directory for the command.',
+        },
+        timeout: {
+          type: 'number',
+          description: 'Optional timeout in milliseconds (default: 30,000 ms).',
+        },
+      },
+      required: ['command'],
+    },
+    async execute({ input }) {
+      // Implementation details...
+    },
+  });
+}
+```
+
+**File System Tool**
+
+```ts
+import fs from 'fs/promises';
+import path from 'path';
+import { Tool } from '@agenite/tool';
+
+interface FileSystemInput {
+  operation: 'read' | 'write' | 'list' | 'exists' | 'mkdir';
+  path: string;
+  content?: string;
+}
+
+export function createFileSystemTool(): Tool<FileSystemInput> {
+  return new Tool({
+    name: 'file_system',
+    description:
+      'Read, write, and check files in the project. Can create both files and directories',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        operation: {
+          type: 'string',
+          enum: ['read', 'write', 'list', 'exists', 'mkdir'],
+        },
+        path: { type: 'string', description: 'relative path to the file' },
+        content: {
+          type: 'string',
+          description: 'Content to write to the file',
+        },
+      },
+      required: ['operation', 'path'],
+    },
+
+    async execute({ input }) {
+      // Implementation details...
+    },
+  });
+}
+```
+
+# **Building a Research Agent System**
+
+![Image description](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/7cewqh4zbr5tqp0c5glk.png)
+
+
+The research agent system is more advanced, consisting of multiple agents working together to generate high-quality content.
+
+## **How It Works:**
+
+## **The Orchestrator Agent**
+
+It acts as a manager that delegates tasks to:
+
+* **Researcher Agent** (extracts data from multiple sources)
+    
+* **Blog Writer Agent** (creates structured content)
+    
+
+It ensures a natural flow of tasks:
+
+1. First, it sends URLs to the **Researcher Agent**.
+    
+2. Then, it collects research data and synthesizes it.
+    
+3. Finally, it hands over the processed information to the **Blog Writer Agent**.
+    
+
+## **The Researcher Agent**
+
+* Uses a **Web Scraper Tool** to extract key insights from online sources.
+    
+* Organizes the collected data logically before passing it to the orchestrator.
+    
+
+## **The Blog Writer Agent**
+
+* Receives structured research data.
+    
+* Generates well-formatted markdown content with proper headings and sections.
+    
+* Follows writing best practices (concise paragraphs, clear structure, and engagement techniques).
+    
+
+Now, let’s take a look at the implementations
+
+## **Orchestrator Agent**
+
+```ts
+import { Agent } from '@agenite/agent';
+import { getLLMProvider } from 'shared-llm-provider';
+import { createResearcherAgent } from './researcher';
+import { createBlogWriterAgent } from './blog-writer';
+
+export function createOrchestratorAgent(): Agent {
+  const systemPrompt = `You are an expert content creation orchestrator. Your task is to:
+1. Use the researcher agent to gather information from multiple sources
+2. Combine and synthesize the research data
+3. Use the blog writer agent to create a well-structured blog post
+4. Ensure the content flows naturally and maintains coherence
+To accomplish this:
+1. First use the researcher agent for each URL to gather information
+2. Then use the researcher agent again to synthesize all the gathered information
+3. Finally use the blog writer agent to create the final post
+Always ensure the content is:
+- Well-researched and accurate
+- Properly structured
+- Engaging and informative
+- Formatted cleanly in markdown
+`;
+  const provider = getLLMProvider();
+  const researcherAgent = createResearcherAgent();
+  const blogWriterAgent = createBlogWriterAgent();
+  return new Agent({
+    name: 'OrchestratorAgent',
+    description: 'An AI agent that orchestrates research and blog writing',
+    provider,
+    systemPrompt,
+    tools: [researcherAgent, blogWriterAgent],
+  });
+}
+```
+
+## **Researcher Agent**
+
+```ts
+import { Agent } from '@agenite/agent';
+import { getLLMProvider } from 'shared-llm-provider';
+import { createWebScraperTool } from '../tools/web-scraper';
+
+export function createResearcherAgent(): Agent {
+  const systemPrompt = `You are an expert researcher. Your task is to:
+1. Extract relevant information about the topic from the provided URL
+2. Analyze and organize the information
+3. Identify key insights and important points
+4. Structure the research in a clear format
+
+Always ensure to:
+- Focus on relevant information
+- Maintain accuracy
+- Organize content logically
+- Highlight key findings
+`;
+
+  const provider = getLLMProvider();
+
+  return new Agent({
+    name: 'ResearcherAgent',
+    description: 'An AI agent specialized in web research',
+    provider,
+    systemPrompt,
+    tools: [createWebScraperTool()],
+  });
+}
+```
+
+## **Blog Writer Agent**
+
+```ts
+import { Agent } from '@agenite/agent';
+import { getLLMProvider } from 'shared-llm-provider';
+import { createBlogWriterTool } from '../tools/blog-writer';
+
+export function createBlogWriterAgent(): Agent {
+  const systemPrompt = `You are an expert blog writer. Your task is to:
+1. Analyze the research data provided
+2. Create a well-structured blog post
+3. Include proper headings and sections
+4. Make the content engaging and informative
+5. Format everything in clean markdown
+
+Always follow these writing guidelines:
+- Start with a compelling introduction
+- Use clear section headings
+- Include relevant examples and insights
+- End with a strong conclusion
+- Keep paragraphs concise and readable
+`;
+
+  const provider = getLLMProvider();
+
+  return new Agent({
+    name: 'BlogWriterAgent',
+    description: 'An AI agent specialized in writing blog posts',
+    provider,
+    systemPrompt,
+    tools: [createBlogWriterTool()],
+  });
+}
+```
+
+These agents compromise the following tools whose source you can check in the [GitHub repository](https://github.com/subeshb1/ai-agents-deep-dive):
+
+* Web scraper using puppeteer: [Code](https://github.com/subeshb1/ai-agents-deep-dive/blob/main/researcher-agent/src/tools/web-scraper.ts)
+    
+* A markdown file writer: [Code](https://github.com/subeshb1/ai-agents-deep-dive/blob/main/researcher-agent/src/tools/blog-writer.ts)
+    
+
+# **Conclusion**
+
+We’ve explored the fundamentals of building AI agents using LLMs and Agenite. From understanding key terminologies to creating functional agents, this blog has shown how accessible and powerful AI agents can be. Whether you’re automating workflows, generating content, or building tools, the possibilities are endless.
+
+# **What’s Next?**
+
+* **Clone the Agenite repository** and try out the examples.
+    
+* **Create your own AI agent** — start with something simple and expand from there.
+    
+* **Explore advanced features** like multi-agent workflows and orchestration
+    
+
+**Challenge:** Build something and share your experience. What kind of agent will you create? Let’s push the limits together.
+
+# **Let’s Build Together!**
+
+AI agents are all about collaboration, and we’d love to see what you create. Share your projects, ideas, and improvements:
+
+* **Contribute to the** [**Agenite repository**](https://github.com/subeshb1/agenite): Your input can help make Agenite even better.
+    
+* **Join the community**: Join discussions, share your experiences, and get feedback from other creators.
+    
+* **Collaborate on exciting new features**: Have an idea for a cool new feature? Let’s work together to bring it to life!
+    
+
+Your contributions, no matter how big or small, help shape the future of AI agents. Let’s build something great together!
+
+## **Connect with me:**
+
+* GitHub: [subeshb1](https://github.com/subeshb1)
+    
+* LinkedIn: [Subesh Bhandari](https://www.linkedin.com/in/subesh-bhandari-523438112/)
+    
+* X: [https://x.com/subeshb1](https://x.com/subeshb1)
+    
+* Leave a ⭐ on the [repository](https://github.com/subeshb1/agenite) if you found this helpful!
+    
+
+[  
+](https://medium.com/tag/agentic-ai?source=post_page-----695df4b1e94f--------------------------------)
+
