@@ -14,6 +14,9 @@ export interface Post {
   author?: string;
   coverImage?: string;
   featured?: boolean;
+  comments?: {
+    enabled: boolean;
+  };
 }
 
 export async function getPostBySlug(slug: string): Promise<Post | null> {
@@ -33,6 +36,9 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
       author: data.author || 'Subesh Bhandari',
       coverImage: data.coverImage,
       featured: data.featured || false,
+      comments: {
+        enabled: data.comments?.enabled ?? true,
+      },
     };
   } catch (error) {
     console.error(`Error getting post for slug ${slug}:`, error);
@@ -62,6 +68,9 @@ export async function getAllPosts(): Promise<Post[]> {
           author: data.author || 'Subesh Bhandari',
           coverImage: data.coverImage,
           featured: data.featured || false,
+          comments: {
+            enabled: data.comments?.enabled ?? true,
+          },
         };
       })
       .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());

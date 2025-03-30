@@ -7,6 +7,7 @@ import path from 'path';
 import matter from 'gray-matter';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import { components } from '@/components/blog/MDXComponents';
+import GitHubComments from '@/components/blog/GitHubComments';
 
 interface BlogPostParams {
   slug: string;
@@ -115,6 +116,13 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           <div className="prose prose-lg dark:prose-invert max-w-none">
             <MDXRemote source={content} components={components} />
           </div>
+
+          {post.comments?.enabled !== false && (
+            <div className="mt-16 border-t border-[rgb(var(--color-border))] pt-8">
+              <h2 className="text-2xl font-semibold mb-8">Comments</h2>
+              <GitHubComments />
+            </div>
+          )}
         </article>
       </MainLayout>
     );

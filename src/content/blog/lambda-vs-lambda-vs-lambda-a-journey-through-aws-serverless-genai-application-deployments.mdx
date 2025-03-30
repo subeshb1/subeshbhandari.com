@@ -5,6 +5,8 @@ description: It's the start of 2025, GenAI hype is at its peak, and I wanted to 
 tags: ["aws","genai","serverless","lambda","websocket","sse","rest"]
 date: 2025-02-05 12:26 +0000
 featured: true
+comments:
+  enabled: true
 coverImage: https://dev-to-uploads.s3.amazonaws.com/uploads/articles/qm9lq2ijbg1rh3zyvj7y.png
 # cover_image: https://direct_url_to_image.jpg
 # Use a ratio of 100:42 for best results.
@@ -165,7 +167,7 @@ Here's the GitHub repository that you can deploy and play around with
 
 # **Invoking the LLM**
 
-Here’s a snippet of how the lambda invokes [LLM using bedrock](https://github.com/subeshb1/aws-gen-ai-lambda-deployment-strategies/blob/main/services/shared/genai/service.ts)
+Here's a snippet of how the lambda invokes [LLM using bedrock](https://github.com/subeshb1/aws-gen-ai-lambda-deployment-strategies/blob/main/services/shared/genai/service.ts)
 
 ```plaintext
 export interface GenAIRequest {
@@ -231,6 +233,7 @@ export class GenAIService {
       throw apiError;
     }
   }
+}
 ```
 
 **Usage:**
