@@ -1,0 +1,168 @@
+---
+title: Building a blog with MDX and Next.js
+description: A comprehensive guide to creating a modern blog using MDX for content and Next.js for the frontend.
+date: 2024-03-28
+tags: [nextjs, mdx, blog, tutorial]
+author: Subesh Bhandari
+---
+
+# Building a blog with MDX and Next.js
+
+Creating a blog with MDX and Next.js is a powerful combination that gives you the flexibility of Markdown with the dynamic capabilities of React. This guide will walk you through setting up a blog with MDX in Next.js.
+
+## What is MDX?
+
+MDX is a format that lets you write JSX in your Markdown documents. It combines the simplicity of Markdown with the power of React components.
+
+<Callout emoji="💡">
+  MDX stands for Markdown + JSX, giving you the best of both worlds!
+</Callout>
+
+## Setting up MDX in Next.js
+
+First, you'll need to install the necessary packages:
+
+```bash
+npm install next-mdx-remote gray-matter rehype-pretty-code rehype-slug remark-gfm
+```
+
+Next, configure your Next.js project to handle MDX files:
+
+```js
+// next.config.mjs
+import createMDX from '@next/mdx'
+
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  pageExtensions: ['js', 'jsx', 'mdx', 'ts', 'tsx'],
+  experimental: {
+    mdxRs: true,
+  },
+}
+
+const withMDX = createMDX({
+  options: {
+    remarkPlugins: ['remark-gfm'],
+    rehypePlugins: ['rehype-slug', 'rehype-pretty-code'],
+  },
+})
+
+export default withMDX(nextConfig)
+```
+
+## Creating MDX content
+
+MDX files use frontmatter for metadata and allow you to mix Markdown with React components:
+
+```mdx
+---
+title: My First Post
+date: 2023-10-15
+---
+
+# Hello, MDX!
+
+This is my first post written in MDX.
+
+<CustomComponent>
+  This is a custom React component inside MDX!
+</CustomComponent>
+```
+
+## Rendering MDX content
+
+To render MDX content in Next.js, you can use the `next-mdx-remote` package:
+
+```tsx
+import fs from 'fs'
+import path from 'path'
+import matter from 'gray-matter'
+import { MDXRemote } from 'next-mdx-remote/rsc'
+
+// Component to render MDX content
+export default async function BlogPost({ params }) {
+  const { slug } = params
+  const filePath = path.join(process.cwd(), 'content', `${slug}.mdx`)
+  const fileContent = fs.readFileSync(filePath, 'utf8')
+  
+  const { content, data } = matter(fileContent)
+  
+  return (
+    <article>
+      <h1>{data.title}</h1>
+      <time>{data.date}</time>
+      <MDXRemote source={content} />
+    </article>
+  )
+}
+```
+
+## Styling MDX content
+
+The Tailwind Typography plugin is perfect for styling MDX content:
+
+```bash
+npm install @tailwindcss/typography
+```
+
+Then, update your Tailwind config:
+
+```js
+// tailwind.config.js
+module.exports = {
+  // ...
+  plugins: [
+    require('@tailwindcss/typography'),
+    // ...
+  ],
+}
+```
+
+Now you can use the `prose` class to style your MDX content:
+
+```tsx
+<article className="prose dark:prose-invert">
+  <MDXRemote source={content} />
+</article>
+```
+
+## Advanced MDX features
+
+### Custom components
+
+You can pass custom components to your MDX content:
+
+```tsx
+const components = {
+  CustomButton: (props) => (
+    <button className="bg-blue-500 text-white p-2 rounded" {...props} />
+  ),
+  Callout: ({ children, emoji }) => (
+    <div className="p-4 border-l-4 border-blue-500 bg-blue-50">
+      <span className="mr-2">{emoji}</span>
+      {children}
+    </div>
+  ),
+}
+
+<MDXRemote source={content} components={components} />
+```
+
+### Code syntax highlighting
+
+With rehype-pretty-code, you get beautiful syntax highlighting:
+
+```tsx
+// Some TypeScript code
+function greet(name: string): string {
+  return `Hello, ${name}!`
+}
+```
+
+## Conclusion
+
+MDX is a fantastic choice for creating a blog with Next.js. It combines the ease of writing in Markdown with the power and flexibility of React components. 
+
+By following this guide, you'll have a solid foundation for a modern blog that's easy to maintain and extend with new features.
+
+Happy blogging! 
