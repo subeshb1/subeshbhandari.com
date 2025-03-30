@@ -1,6 +1,5 @@
 import { highlightCode } from '@/lib/shiki';
 import { CopyButton } from './CopyButton';
-
 interface CodeBlockProps {
   children: string;
   className?: string;
@@ -26,15 +25,22 @@ export async function CodeBlock({
     const highlighted = await highlightCode(codeString, lang);
 
     return (
-      <div className="code-block-wrapper relative my-6">
-        {filename && (
-          <div className="code-filename px-4 py-2 bg-[rgb(var(--color-card-darker))] border-b border-[rgb(var(--color-border))] text-sm text-[rgb(var(--color-text-secondary))]">
-            {filename}
+      <div className="code-block-wrapper relative border border-[rgb(var(--color-border))] rounded-lg overflow-hidden">
+        <div className="flex items-center  justify-between bg-[rgb(var(--color-card-darker))] border-b border-[rgb(var(--color-border))] text-sm text-[rgb(var(--color-text-secondary))]">
+          <div className="px-4 py-2 flex items-center gap-2">
+            {filename && <span>{filename}</span>}
+            {lang !== 'text' && (
+              <span className="px-2 py-0.5 rounded-md bg-[rgb(var(--color-card))] text-xs font-mono">
+                {lang}
+              </span>
+            )}
           </div>
-        )}
-        <div className="shiki-wrapper overflow-x-auto relative">
+          <div className="px-4 py-2">
+            <CopyButton code={codeString} />
+          </div>
+        </div>
+        <div className="shiki-wrapper overflow-x-auto relative border-t border-[rgb(var(--color-border))]">
           {highlighted}
-          <CopyButton code={codeString} />
         </div>
       </div>
     );
@@ -42,15 +48,21 @@ export async function CodeBlock({
     console.error('Error highlighting code:', error);
     // Fallback rendering if highlighting fails
     return (
-      <div className="code-block-wrapper relative my-6">
-        {filename && (
-          <div className="code-filename px-4 py-2 bg-[rgb(var(--color-card-darker))] border-b border-[rgb(var(--color-border))] text-sm text-[rgb(var(--color-text-secondary))]">
-            {filename}
+      <div className="code-block-wrapper relative border border-[rgb(var(--color-border))] rounded-lg overflow-hidden">
+        <div className="flex items-center justify-between bg-[rgb(var(--color-card-darker))] border-b border-[rgb(var(--color-border))] text-sm text-[rgb(var(--color-text-secondary))]">
+          <div className="px-4 py-2 flex items-center gap-2">
+            {filename && <span>{filename}</span>}
+            {lang !== 'text' && (
+              <span className="px-2 py-0.5 rounded-md bg-[rgb(var(--color-card))] text-xs font-mono">
+                {lang}
+              </span>
+            )}
           </div>
-        )}
-        <pre className="overflow-auto p-4 bg-[rgb(var(--color-card))] border border-[rgb(var(--color-border))] rounded-lg">
-          <code className={className}>{children}</code>
-        </pre>
+          <div className="px-4 py-2">
+            <CopyButton code={codeString} />
+          </div>
+        </div>
+        {children}
       </div>
     );
   }

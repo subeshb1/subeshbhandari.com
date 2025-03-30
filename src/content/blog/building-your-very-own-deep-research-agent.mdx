@@ -51,7 +51,7 @@ Let’s see this in action with some real code:
 
 ### **Creating the Deep Research Agent**
 
-```plaintext
+```ts
 import { Agent } from '@agenite/agent';
 import { getLLMProvider } from '@agenite-examples/llm-provider';
 import { fileManagerTool, webScraperTool, webSearchTool } from '../tools';
@@ -96,7 +96,7 @@ Always maintain transparency about sources:
 
 ### **Web Search Tool (DuckDuckGo)**
 
-```plaintext
+```ts
 import { Tool } from '@agenite/tool';
 import puppeteer from 'puppeteer';
 
@@ -136,8 +136,8 @@ export const webSearchTool = new Tool({
 
 ### **Page Scraper Tool**
 
-```plaintext
-mport puppeteerExtra from 'puppeteer-extra';
+```ts
+import puppeteerExtra from 'puppeteer-extra';
 import Stealth from 'ipuppeteer-extra-plugin-stealth';
 puppeteerExtra.use(Stealth());
 
@@ -175,7 +175,7 @@ class ContentExtractor {
 
 ### **File Manager Tool**
 
-```plaintext
+```ts
 import * as fs from 'fs/promises';
 import * as path from 'path';
 
@@ -206,7 +206,7 @@ export const fileManagerTool = new Tool({
 
 To use the research agent, simply instantiate it and provide a research topic:
 
-```plaintext
+```ts
 const topic = 'Latest advancements in AI';
 deepResearchAgent.execute({ input: topic });
 ```

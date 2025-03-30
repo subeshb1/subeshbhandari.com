@@ -1,0 +1,24 @@
+# Project rules and conventions
+
+## Technology stack
+
+- Next.js (App Router)
+- Tailwind CSS v4
+- TypeScript
+
+## Important notes
+
+- Tailwind v4 does not use a tailwind.config.js file for configuration
+- Project uses next.config.ts instead of next.config.js for type safety
+
+## File structure
+
+- Use the app directory structure following Next.js 13+ conventions
+- Keep components in the app/components directory
+- Place reusable utilities in the app/lib directory
+- Store types in app/types directory
+
+## MDX
+
+- Code highlight is done using shikhi
+- Remark, rehype plugins are used for markdown parsing

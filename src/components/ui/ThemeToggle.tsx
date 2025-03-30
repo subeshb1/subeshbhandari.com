@@ -6,17 +6,39 @@ export default function ThemeToggle() {
   const { theme, setTheme } = useTheme();
 
   return (
-    <div className="flex items-center space-x-2">
+    <div className="flex items-center space-x-1 bg-gray-100 dark:bg-gray-800 rounded-lg p-1">
       <button
-        onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-        className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors"
-        aria-label="Toggle theme"
+        onClick={() => setTheme('light')}
+        className={`p-2 rounded-md flex items-center justify-center transition-colors ${
+          theme === 'light'
+            ? 'bg-white text-black shadow-sm'
+            : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
+        }`}
+        aria-label="Light theme"
       >
-        {theme === 'dark' ? (
-          <SunIcon className="h-5 w-5" />
-        ) : (
-          <MoonIcon className="h-5 w-5" />
-        )}
+        <SunIcon className="h-5 w-5" />
+      </button>
+      <button
+        onClick={() => setTheme('dark')}
+        className={`p-2 rounded-md flex items-center justify-center transition-colors ${
+          theme === 'dark'
+            ? 'bg-gray-700 text-white shadow-sm'
+            : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
+        }`}
+        aria-label="Dark theme"
+      >
+        <MoonIcon className="h-5 w-5" />
+      </button>
+      <button
+        onClick={() => setTheme('system')}
+        className={`p-2 rounded-md flex items-center justify-center transition-colors ${
+          theme === 'system'
+            ? 'bg-gray-200 dark:bg-gray-600 shadow-sm'
+            : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
+        }`}
+        aria-label="System theme"
+      >
+        <SystemIcon className="h-5 w-5" />
       </button>
     </div>
   );
@@ -55,6 +77,25 @@ function MoonIcon({ className = 'h-6 w-6' }: { className?: string }) {
         strokeLinecap="round"
         strokeLinejoin="round"
         d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z"
+      />
+    </svg>
+  );
+}
+
+function SystemIcon({ className = 'h-6 w-6' }: { className?: string }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={1.5}
+      stroke="currentColor"
+      className={className}
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25m18 0A2.25 2.25 0 0018.75 3H5.25A2.25 2.25 0 003 5.25m18 0V12a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 12V5.25"
       />
     </svg>
   );

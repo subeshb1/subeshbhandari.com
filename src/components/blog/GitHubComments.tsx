@@ -1,12 +1,15 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { useTheme } from '../layout/ThemeProvider';
 
-interface GitHubCommentsProps {
-  theme?: 'light' | 'dark' | 'dark_dimmed' | 'dark_high_contrast' | 'transparent_dark' | 'preferred_color_scheme';
-}
-
-export default function GitHubComments({ theme = 'preferred_color_scheme' }: GitHubCommentsProps) {
+const themeMap = {
+  light: 'light',
+  dark: 'dark',
+  system: 'preferred_color_scheme',
+};
+export default function GitHubComments() {
+  const { theme } = useTheme();
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -29,7 +32,7 @@ export default function GitHubComments({ theme = 'preferred_color_scheme' }: Git
     script.setAttribute('data-reactions-enabled', '1');
     script.setAttribute('data-emit-metadata', '0');
     script.setAttribute('data-input-position', 'bottom');
-    script.setAttribute('data-theme', theme);
+    script.setAttribute('data-theme', themeMap[theme]);
     script.setAttribute('data-lang', 'en');
     script.setAttribute('crossorigin', 'anonymous');
     script.async = true;
@@ -48,4 +51,4 @@ export default function GitHubComments({ theme = 'preferred_color_scheme' }: Git
   }, [theme]);
 
   return <div ref={containerRef} className="mt-10" />;
-} 
+}
