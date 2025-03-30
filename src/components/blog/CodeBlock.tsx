@@ -25,8 +25,8 @@ export async function CodeBlock({
     const highlighted = await highlightCode(codeString, lang);
 
     return (
-      <div className="code-block-wrapper relative border border-[rgb(var(--color-border))] rounded-lg overflow-hidden">
-        <div className="flex items-center  justify-between bg-[rgb(var(--color-card-darker))] border-b border-[rgb(var(--color-border))] text-sm text-[rgb(var(--color-text-secondary))]">
+      <div className="code-block-wrapper relative border-2 border-[rgb(var(--color-border))] rounded-lg overflow-hidden shadow-lg">
+        <div className="flex items-center  justify-between bg-[rgb(var(--color-card-darker))] border-b-2 border-[rgb(var(--color-border))] text-sm text-[rgb(var(--color-text-secondary))]">
           <div className="px-4 py-2 flex items-center gap-2">
             {filename && <span>{filename}</span>}
             {lang !== 'text' && (
@@ -39,7 +39,7 @@ export async function CodeBlock({
             <CopyButton code={codeString} />
           </div>
         </div>
-        <div className="shiki-wrapper overflow-x-auto relative border-t border-[rgb(var(--color-border))]">
+        <div className="shiki-wrapper overflow-x-auto relative border-t-2 border-[rgb(var(--color-border))]">
           {highlighted}
         </div>
       </div>
@@ -48,8 +48,8 @@ export async function CodeBlock({
     console.error('Error highlighting code:', error);
     // Fallback rendering if highlighting fails
     return (
-      <div className="code-block-wrapper relative border border-[rgb(var(--color-border))] rounded-lg overflow-hidden">
-        <div className="flex items-center justify-between bg-[rgb(var(--color-card-darker))] border-b border-[rgb(var(--color-border))] text-sm text-[rgb(var(--color-text-secondary))]">
+      <div className="code-block-wrapper relative border-2 border-[rgb(var(--color-border))] rounded-lg overflow-hidden shadow-lg">
+        <div className="flex items-center justify-between bg-[rgb(var(--color-card-darker))] border-b-2 border-[rgb(var(--color-border))] text-sm text-[rgb(var(--color-text-secondary))]">
           <div className="px-4 py-2 flex items-center gap-2">
             {filename && <span>{filename}</span>}
             {lang !== 'text' && (
