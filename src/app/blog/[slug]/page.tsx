@@ -43,6 +43,9 @@ export async function generateMetadata({
     description: post.description,
     keywords: post.tags,
     authors: [{ name: post.author }],
+    alternates: {
+      canonical: `/blog/${slug}`,
+    },
     openGraph: {
       title: post.title,
       description: post.description,
@@ -94,15 +97,15 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     author: {
       '@type': 'Person',
       name: post.author || 'Subesh Bhandari',
-      url: 'https://subeshbhandari.com/about'
+      url: 'https://www.subeshbhandari.com/about'
     },
     datePublished: post.date,
     dateModified: post.lastModified || post.date,
-    image: post.coverImage || 'https://subeshbhandari.com/og-image.jpg',
+    image: post.coverImage || 'https://www.subeshbhandari.com/og-image.jpg',
     publisher: {
       '@type': 'Person',
       name: 'Subesh Bhandari',
-      url: 'https://subeshbhandari.com'
+      url: 'https://www.subeshbhandari.com'
     }
   };
 

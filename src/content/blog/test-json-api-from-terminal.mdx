@@ -3,14 +3,14 @@ title: Test JSON API from the terminal
 published: true
 description: api-test is an API testing framework for the terminal that lets you organize test cases in JSON files, run them simultaneously, and add automated tests to your API.
 tags: ["apitesting","automation","bash","API"]
-coverImage: https://subeshbhandari.com/static/bdd0de114c4ac93728b1035e8996f3ba/1043c/api-test-ci.png
+coverImage: https://www.subeshbhandari.com/static/bdd0de114c4ac93728b1035e8996f3ba/1043c/api-test-ci.png
 date: 2020-06-12
 ---
 
 
 > TL;DR: `api-test` is an API testing framework for the terminal that lets you organize test cases in JSON files, run them simultaneously, and add automated tests to your API.
 Repo link: https://github.com/subeshb1/api-test
-Docs: https://subeshbhandari.com/api-test
+Docs: https://www.subeshbhandari.com/api-test
 
 When it comes to testing an API from the terminal the first thing that comes to anyone’s mind is curl. It is quite a handy tool until you have a large payload that you need to constantly change and paste it in the terminal again and again for each case you want to test. Especially when you are testing private APIs using the terminal provided by **Cloud9**.
 
@@ -152,7 +152,7 @@ The tests are written in expect property of each test case and checks can be mad
 In the response body of get_api we know the response will contain a property author and with value Aneeta Sharma we add a contains check to match the subset. Similarly, for the values which are dynamic, we can check if the key is present using hasKey check.
 For the invalid response, we know the response as it is expected to be static. So, we can have an equality check using eq . The eq the check will compare all the object value irrespective of the key order.
 
-The checks `path_eq` and `path_contains` are similar to the ability to make comparisons at any depth of a JSON object. See the [docs](https://subeshbhandari.com/api-test) for more information.
+The checks `path_eq` and `path_contains` are similar to the ability to make comparisons at any depth of a JSON object. See the [docs](https://www.subeshbhandari.com/api-test) for more information.
 
 Now, let’s see the tests in action!
 
@@ -220,4 +220,4 @@ If you are testing private APIs or only have access to the terminal, api-test is
 
 ## References:
 * api-test Github link: https://github.com/subeshb1/api-test
-* api-test docs: https://subeshbhandari.com/api-test
+* api-test docs: https://www.subeshbhandari.com/api-test

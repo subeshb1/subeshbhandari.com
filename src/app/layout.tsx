@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://subeshbhandari.com'),
+  metadataBase: new URL('https://www.subeshbhandari.com'),
   title: "Subesh Bhandari - Personal Blog",
   description: "Personal blog and portfolio of Subesh Bhandari, where I write about technology, share projects, and document my experiences.",
   keywords: ["blog", "technology", "portfolio", "web development", "Subesh Bhandari"],
@@ -29,9 +29,6 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     creator: '@subeshb1',
     images: '/og-image.jpg',
-  },
-  alternates: {
-    canonical: '/',
   }
 };
 
