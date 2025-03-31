@@ -38,7 +38,7 @@ export default async function Home() {
           <div className="md:col-span-5">
             <div className="relative w-48 h-48 md:w-64 md:h-64 mx-auto overflow-hidden rounded-full">
               <Image
-                src="/hero.jpeg"
+                src="/hero.png"
                 alt="Subesh Bhandari"
                 fill
                 className="object-cover"

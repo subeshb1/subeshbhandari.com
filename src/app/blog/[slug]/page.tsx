@@ -8,6 +8,9 @@ import matter from 'gray-matter';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import { components } from '@/components/blog/MDXComponents';
 import GitHubComments from '@/components/blog/GitHubComments';
+import remarkGfm from 'remark-gfm';
+import rehypeSlug from 'rehype-slug';
+import rehypePrettyCode from 'rehype-pretty-code';
 
 interface BlogPostParams {
   slug: string;
@@ -114,7 +117,16 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           </div>
 
           <div className="prose prose-lg max-w-none">
-            <MDXRemote source={content} components={components} />
+            <MDXRemote
+              options={{
+                mdxOptions: {
+                  remarkPlugins: [remarkGfm],
+                  rehypePlugins: [rehypeSlug, [rehypePrettyCode]],
+                },
+              }}
+              source={content}
+              components={components}
+            />
           </div>
 
           {post.comments?.enabled !== false && (

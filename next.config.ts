@@ -1,8 +1,8 @@
-import createMDX from '@next/mdx';
 import { NextConfig } from 'next';
-import remarkGfm from 'remark-gfm';
-import rehypeSlug from 'rehype-slug';
-import rehypePrettyCode from 'rehype-pretty-code';
+// import createMDX from '@next/mdx';
+// import remarkGfm from 'remark-gfm';
+// import rehypeSlug from 'rehype-slug';
+// import rehypePrettyCode from 'rehype-pretty-code';
 
 /** @type {import('next').NextConfig} */
 const nextConfig: NextConfig = {
@@ -20,18 +20,18 @@ const nextConfig: NextConfig = {
   output: 'export',
 };
 
-// Rehype Pretty Code options
-const prettyCodeOptions = {
-  theme: 'github-dark',
-  keepBackground: true,
-};
+// // Rehype Pretty Code options
+// const prettyCodeOptions = {
+//   theme: 'github-dark',
+//   keepBackground: true,
+// };
 
-const withMDX = createMDX({
-  extension: /\.mdx?$/,
-  options: {
-    remarkPlugins: [remarkGfm],
-    rehypePlugins: [rehypeSlug, [rehypePrettyCode, prettyCodeOptions]],
-  },
-});
+// const withMDX = createMDX({
+//   extension: /\.mdx?$/,
+//   options: {
+//     remarkPlugins: [remarkGfm],
+//     rehypePlugins: [rehypeSlug, [rehypePrettyCode, prettyCodeOptions]],
+//   },
+// });
 
-export default withMDX(nextConfig);
+export default nextConfig;
