@@ -10,7 +10,6 @@ import { components } from '@/components/blog/MDXComponents';
 import GitHubComments from '@/components/blog/GitHubComments';
 import remarkGfm from 'remark-gfm';
 import rehypeSlug from 'rehype-slug';
-import rehypePrettyCode from 'rehype-pretty-code';
 import JsonLd from '@/components/layout/JsonLd';
 
 interface BlogPostParams {
@@ -60,7 +59,7 @@ export async function generateMetadata({
           width: 1200,
           height: 630,
           alt: post.title,
-        }
+        },
       ],
     },
     twitter: {
@@ -68,7 +67,7 @@ export async function generateMetadata({
       title: post.title,
       description: post.description,
       images: [ogImage],
-    }
+    },
   };
 }
 
@@ -97,7 +96,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     author: {
       '@type': 'Person',
       name: post.author || 'Subesh Bhandari',
-      url: 'https://www.subeshbhandari.com/about'
+      url: 'https://www.subeshbhandari.com/about',
     },
     datePublished: post.date,
     dateModified: post.lastModified || post.date,
@@ -105,8 +104,8 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     publisher: {
       '@type': 'Person',
       name: 'Subesh Bhandari',
-      url: 'https://www.subeshbhandari.com'
-    }
+      url: 'https://www.subeshbhandari.com',
+    },
   };
 
   // Read MDX content directly from file (SEO optimized)
@@ -162,7 +161,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               options={{
                 mdxOptions: {
                   remarkPlugins: [remarkGfm],
-                  rehypePlugins: [rehypeSlug, [rehypePrettyCode]],
+                  rehypePlugins: [rehypeSlug],
                 },
               }}
               source={content}
