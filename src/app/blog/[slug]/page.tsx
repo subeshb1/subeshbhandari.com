@@ -11,6 +11,7 @@ import GitHubComments from '@/components/blog/GitHubComments';
 import remarkGfm from 'remark-gfm';
 import rehypeSlug from 'rehype-slug';
 import rehypePrettyCode from 'rehype-pretty-code';
+import JsonLd from '@/components/layout/JsonLd';
 
 interface BlogPostParams {
   slug: string;
@@ -35,6 +36,8 @@ export async function generateMetadata({
     };
   }
 
+  const ogImage = post.coverImage || '/og-image.jpg';
+
   return {
     title: `${post.title} | Subesh Bhandari`,
     description: post.description,
@@ -48,7 +51,21 @@ export async function generateMetadata({
       modifiedTime: post.lastModified,
       authors: [post.author || 'Subesh Bhandari'],
       tags: post.tags,
+      images: [
+        {
+          url: ogImage,
+          width: 1200,
+          height: 630,
+          alt: post.title,
+        }
+      ],
     },
+    twitter: {
+      card: 'summary_large_image',
+      title: post.title,
+      description: post.description,
+      images: [ogImage],
+    }
   };
 }
 
@@ -69,6 +86,26 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     notFound();
   }
 
+  const articleStructuredData = {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: post.title,
+    description: post.description,
+    author: {
+      '@type': 'Person',
+      name: post.author || 'Subesh Bhandari',
+      url: 'https://subeshbhandari.com/about'
+    },
+    datePublished: post.date,
+    dateModified: post.lastModified || post.date,
+    image: post.coverImage || 'https://subeshbhandari.com/og-image.jpg',
+    publisher: {
+      '@type': 'Person',
+      name: 'Subesh Bhandari',
+      url: 'https://subeshbhandari.com'
+    }
+  };
+
   // Read MDX content directly from file (SEO optimized)
   const contentPath = path.join(
     process.cwd(),
@@ -81,6 +118,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   try {
     return (
       <MainLayout>
+        <JsonLd data={articleStructuredData} />
         <article className="max-w-3xl mx-auto">
           <div className="mb-8">
             <div className="mb-4">

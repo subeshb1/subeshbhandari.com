@@ -16,7 +16,7 @@ A modern, fast, and responsive personal blog and portfolio built with Next.js 15
 ## Tech stack
 
 - **Framework**: [Next.js 15](https://nextjs.org/)
-- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
+- **Styling**: [Tailwind CSS V4](https://tailwindcss.com/)
 - **Content**: [MDX](https://mdxjs.com/)
 - **Typography**: Custom CSS with Tailwind Typography principles
 - **Fonts**: Geist Sans and Geist Mono

@@ -15,9 +15,24 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://subeshbhandari.com'),
   title: "Subesh Bhandari - Personal Blog",
   description: "Personal blog and portfolio of Subesh Bhandari, where I write about technology, share projects, and document my experiences.",
   keywords: ["blog", "technology", "portfolio", "web development", "Subesh Bhandari"],
+  openGraph: {
+    images: '/og-image.jpg',
+    type: 'website',
+    locale: 'en_US',
+    siteName: 'Subesh Bhandari',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    creator: '@subeshb1',
+    images: '/og-image.jpg',
+  },
+  alternates: {
+    canonical: '/',
+  }
 };
 
 export default function RootLayout({
